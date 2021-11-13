@@ -2,10 +2,17 @@
   <div class="product-display">
     <div class="product-contain">
       <div class="product-image">
-        <img v-bind:src="image" alt="" />
+        <img :src="image" :alt="description" />
       </div>
       <div class="product-info">
         <h1>{{ product }}</h1>
+        <p v-if="onSale">On sale</p>
+        <p v-if="inventory > 10">In Stock</p>
+        <p v-else-if="inventory <= 10 && inventory > 0">Almost Sold!</p>
+        <p v-else>Out of stock</p>
+        <ul v-for="detail in details" :key="detail">
+          <li>{{ detail }}</li>
+        </ul>
         <p>{{ description }}</p>
       </div>
     </div>
@@ -21,6 +28,9 @@ export default {
       description:
         'Merino wool socks in gray provide comfort and style for every occasion. For when other colors would be a bit too much: these wool socks with their mottled gray look give your outfit just the right amount of vibrancy and harmony it needs.',
       image: '../assets/socks_green.jpg',
+      inventory: 0,
+      onSale: true,
+      details: ['50% wool', '30% cotton', '20% polyester'],
     };
   },
 };
