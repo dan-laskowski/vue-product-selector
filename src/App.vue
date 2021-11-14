@@ -13,13 +13,13 @@ export default {
   },
   data() {
     return {
-      cart: 0,
+      cart: [],
       premium: true,
     };
   },
   methods: {
-    updateCart() {
-      this.cart++;
+    updateCart(id) {
+      this.cart.push(id);
     },
     removeFromCart() {
       if (this.cart) this.cart--;

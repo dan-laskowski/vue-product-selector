@@ -1,6 +1,6 @@
 <template>
   <div class="nav-bar">
-    <div class="cart">Cart ({{ cart }})</div>
+    <div class="cart">Cart ({{ cart.length }})</div>
   </div>
   <div class="product-display">
     <div class="product-contain">
@@ -41,10 +41,18 @@
       </div>
     </div>
   </div>
+  <ReviewList :reviews="reviews" />
+  <ReviewForm @review-submitted="addReview" />
 </template>
 
 <script>
+import ReviewForm from './ReviewForm.vue';
+import ReviewList from './ReviewList.vue';
 export default {
+  components: {
+    ReviewForm,
+    ReviewList,
+  },
   name: 'Product',
   props: {
     premium: {
@@ -79,6 +87,7 @@ export default {
           quantity: 0,
         },
       ],
+      reviews: [],
       sizes: ['34-39', '40-45'],
     };
   },
@@ -87,7 +96,10 @@ export default {
       this.selectedVariant = index;
     },
     addToCart() {
-      this.$emit('add-to-cart');
+      this.$emit('add-to-cart', this.variants[this.selectedVariant].id);
+    },
+    addReview(review) {
+      this.reviews.push(review);
     },
   },
   computed: {
