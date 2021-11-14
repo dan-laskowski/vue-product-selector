@@ -5,17 +5,23 @@
   <div class="product-display">
     <div class="product-contain">
       <div class="product-image">
-        <img :src="image" :alt="description" />
+        <img
+          :src="image"
+          :alt="description"
+          :class="{ 'out-of-stock-img': !inStock }"
+        />
       </div>
       <div class="product-info">
-        <h1>{{ product }}</h1>
+        <h1>{{ title }}</h1>
+        <p v-if="inStock">In Stock</p>
+        <p v-else>Out of stock</p>
         <ul>
           <li v-for="detail in details" :key="detail">{{ detail }}</li>
         </ul>
         <div
-          v-for="variant in variants"
+          v-for="(variant, index) in variants"
           :key="variant.id"
-          @mouseover="updateImage(variant.image)"
+          @mouseover="updateVariant(index)"
           class="color-circle"
           :style="{ backgroundColor: variant.color }"
         ></div>
@@ -23,8 +29,14 @@
           <li v-for="size in sizes" :key="size">{{ size }}</li>
         </ul>
         <!-- <p>{{ description }}</p> -->
-        <button @click="addToCart">Add to Cart</button>
-        <button @click="removeFromCart">Remove from Cart</button>
+        <button
+          class="button"
+          @click="addToCart"
+          :disabled="!inStock"
+          :class="{ disabledButton: !inStock }"
+        >
+          Add to Cart
+        </button>
       </div>
     </div>
   </div>
@@ -37,14 +49,24 @@ export default {
     return {
       cart: 0,
       product: 'Socks',
+      brand: 'Marino',
       description:
         'Merino wool socks in gray provide comfort and style for every occasion. For when other colors would be a bit too much: these wool socks with their mottled gray look give your outfit just the right amount of vibrancy and harmony it needs.',
-      image: '../assets/socks_green.jpg',
-      inStock: true,
+      selectedVariant: 0,
       details: ['50% wool', '30% cotton', '20% polyester'],
       variants: [
-        { id: 2234, color: 'green', image: '../assets/socks_green.jpg' },
-        { id: 2235, color: 'blue', image: '../assets/socks_blue.jpg' },
+        {
+          id: 2234,
+          color: 'green',
+          image: '../assets/socks_green.jpg',
+          quantity: 50,
+        },
+        {
+          id: 2235,
+          color: 'blue',
+          image: '../assets/socks_blue.jpg',
+          quantity: 0,
+        },
       ],
       sizes: ['34-39', '40-45'],
     };
@@ -56,8 +78,19 @@ export default {
     removeFromCart() {
       if (this.cart) this.cart--;
     },
-    updateImage(variantImage) {
-      this.image = variantImage;
+    updateVariant(index) {
+      this.selectedVariant = index;
+    },
+  },
+  computed: {
+    title() {
+      return `${this.brand} ${this.product}`;
+    },
+    image() {
+      return this.variants[this.selectedVariant].image;
+    },
+    inStock() {
+      return this.variants[this.selectedVariant].quantity;
     },
   },
 };
