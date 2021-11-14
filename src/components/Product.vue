@@ -41,7 +41,7 @@
       </div>
     </div>
   </div>
-  <ReviewList :reviews="reviews" />
+  <ReviewList v-if="reviews.length" :reviews="reviews" />
   <ReviewForm @review-submitted="addReview" />
 </template>
 
