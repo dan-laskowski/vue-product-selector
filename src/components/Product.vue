@@ -15,6 +15,7 @@
         <h1>{{ title }}</h1>
         <p v-if="inStock">In Stock</p>
         <p v-else>Out of stock</p>
+        <p>Shipping: {{ shipping }}</p>
         <ul>
           <li v-for="detail in details" :key="detail">{{ detail }}</li>
         </ul>
@@ -45,11 +46,21 @@
 <script>
 export default {
   name: 'Product',
+  props: {
+    premium: {
+      type: Boolean,
+      required: true,
+    },
+    cart: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
-      cart: 0,
       product: 'Socks',
       brand: 'Marino',
+      onSale: false,
       description:
         'Merino wool socks in gray provide comfort and style for every occasion. For when other colors would be a bit too much: these wool socks with their mottled gray look give your outfit just the right amount of vibrancy and harmony it needs.',
       selectedVariant: 0,
@@ -72,25 +83,25 @@ export default {
     };
   },
   methods: {
-    addToCart() {
-      this.cart++;
-    },
-    removeFromCart() {
-      if (this.cart) this.cart--;
-    },
     updateVariant(index) {
       this.selectedVariant = index;
+    },
+    addToCart() {
+      this.$emit('add-to-cart');
     },
   },
   computed: {
     title() {
-      return `${this.brand} ${this.product}`;
+      return `${this.brand} ${this.product} ${this.onSale ? 'is on sale' : ''}`;
     },
     image() {
       return this.variants[this.selectedVariant].image;
     },
     inStock() {
       return this.variants[this.selectedVariant].quantity;
+    },
+    shipping() {
+      return this.premium ? 'Free' : '2.99';
     },
   },
 };
